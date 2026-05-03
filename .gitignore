@@ -34,3 +34,11 @@ pnpm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/generated/prisma
+# env files
+.env
+.env*.local
+
+# design research (not part of app)
+Kimi_Agent_GymHub Clean Design/

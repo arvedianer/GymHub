@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  icon        String?
+  color       String   @default("#78716c")
+  order       Int      @default(0)
+  studies     Study[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Tag {
+  id        String     @id @default(cuid())
+  slug      String     @unique
+  name      String
+  studies   StudyTag[]
+  createdAt DateTime   @default(now())
+}
+
+model Study {
+  id                    String     @id @default(cuid())
+  slug                  String     @unique
+  pmid                  String?
+  title                 String
+  authors               String?
+  journal               String?
+  year                  Int?
+  doi                   String?
+  abstract              String?
+  summaryBeginner       String?
+  summaryIntermediate   String?
+  summaryAdvanced       String?
+  keyFindings           String?    // JSON array of strings
+  practicalTakeaway     String?
+  methodologyQuality    Int        @default(3)
+  studyDesign           String?
+  sampleSize            Int?
+  duration              String?
+  conflictsOfInterest   String?
+  replicationStatus     String?
+  knowledgeLevel        String     @default("INTERMEDIATE") // BEGINNER, INTERMEDIATE, ADVANCED
+  gymLevel              String?    // beginner, intermediate, advanced, expert
+  oberkategorie         String?    // Human-readable topic
+  isFeatured            Boolean    @default(false)
+  isNew                 Boolean    @default(false)
+  categoryId            String?
+  category              Category?  @relation(fields: [categoryId], references: [id])
+  tags                  StudyTag[]
+  bookmarks             Bookmark[]
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+
+  @@index([categoryId])
+  @@index([year])
+  @@index([isFeatured])
+  @@index([isNew])
+  @@index([gymLevel])
+}
+
+model StudyTag {
+  studyId String
+  tagId   String
+  study   Study  @relation(fields: [studyId], references: [id], onDelete: Cascade)
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([studyId, tagId])
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  color       String   @default("#ff3e00")
+  isFeatured  Boolean  @default(false)
+  studyIds    String   // JSON array of study slugs
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GymLevel {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  color       String
+  months      String   // e.g. "0-6", "6-36", "36-72", "72+"
+  order       Int      @default(0)
+  topics      String?  // JSON array of strings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  name          String?
+  image         String?
+  knowledgeLevel String    @default("BEGINNER")
+  bookmarks     Bookmark[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  studyId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  study     Study    @relation(fields: [studyId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, studyId])
+}
+
+model ChatSession {
+  id        String        @id @default(cuid())
+  title     String?
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  role      String      // user | assistant
+  content   String
+  sources   String?     // JSON array of {title, slug}
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
