@@ -42,3 +42,7 @@ next-env.d.ts
 
 # design research (not part of app)
 Kimi_Agent_GymHub Clean Design/
+
+# sqlite database
+prisma/dev.db
+prisma/dev.db-journal
