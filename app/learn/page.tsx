@@ -31,8 +31,37 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export const metadata = {
-  title: "Learn — GymHub",
-  description: "Evidence-based guides to training, nutrition, supplements, recovery, and more. Written from real science, not bro-science.",
+  title: "Fitness Guides & Knowledge — GymHub | Evidence-Based Articles",
+  description:
+    "Evidence-based fitness guides on training, nutrition, supplements, recovery, and health. Written from 334+ peer-reviewed studies — no bro-science, only science.",
+  keywords: [
+    "fitness guides",
+    "training guides",
+    "nutrition articles",
+    "supplement guides",
+    "evidence-based fitness",
+    "workout knowledge",
+    "muscle building guide",
+    "strength training articles",
+  ],
+  alternates: {
+    canonical: "https://gymhub-bay.vercel.app/learn",
+  },
+  openGraph: {
+    title: "Fitness Guides & Knowledge — GymHub",
+    description:
+      "Evidence-based fitness guides on training, nutrition, supplements, recovery, and health. Written from 334+ peer-reviewed studies.",
+    url: "https://gymhub-bay.vercel.app/learn",
+    siteName: "GymHub",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fitness Guides & Knowledge — GymHub",
+    description:
+      "Evidence-based fitness guides on training, nutrition, supplements, recovery, and health. Written from 334+ peer-reviewed studies.",
+  },
 };
 
 export default function LearnPage() {

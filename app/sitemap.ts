@@ -18,7 +18,7 @@ export default async function sitemap() {
     [] as { slug: string; updatedAt: Date }[]
   );
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub-bay.vercel.app";
 
   const staticRoutes = [
     { path: "/", priority: 1.0, freq: "weekly" as const },

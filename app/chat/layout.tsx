@@ -1,8 +1,35 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Evidence Bot — GymHub",
-  description: "Ask anything about fitness, health, or performance. Answers come from peer-reviewed studies only.",
+  title: "AI Fitness Assistant — GymHub",
+  description:
+    "Ask our AI Evidence Bot anything about fitness, nutrition, supplements, or training. Get answers backed by 334+ peer-reviewed scientific studies.",
+  keywords: [
+    "AI fitness assistant",
+    "fitness chatbot",
+    "evidence-based answers",
+    "training advice AI",
+    "nutrition questions",
+    "supplement research bot",
+  ],
+  alternates: {
+    canonical: "https://gymhub-bay.vercel.app/chat",
+  },
+  openGraph: {
+    title: "AI Fitness Assistant — GymHub",
+    description:
+      "Ask our AI Evidence Bot anything about fitness, nutrition, supplements, or training. Get answers backed by 334+ peer-reviewed scientific studies.",
+    url: "https://gymhub-bay.vercel.app/chat",
+    siteName: "GymHub",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Fitness Assistant — GymHub",
+    description:
+      "Ask our AI Evidence Bot anything about fitness, nutrition, supplements, or training. Get answers backed by 334+ peer-reviewed scientific studies.",
+  },
 };
 
 export default function ChatLayout({
@@ -10,5 +37,5 @@ export default function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return children;
 }

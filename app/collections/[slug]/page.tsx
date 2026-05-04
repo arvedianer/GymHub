@@ -33,7 +33,7 @@ export async function generateMetadata({
     select: { name: true, description: true },
   });
   if (!collection) return { title: "Collection Not Found" };
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub-bay.vercel.app";
   return {
     title: `${collection.name} — GymHub Collections`,
     description: collection.description || "Curated fitness research collection.",

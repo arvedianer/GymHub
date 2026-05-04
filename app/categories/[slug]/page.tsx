@@ -29,22 +29,36 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     select: { name: true, description: true },
   });
   if (!category) return { title: "Category Not Found" };
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub-bay.vercel.app";
+  const description =
+    category.description ||
+    `Browse peer-reviewed ${category.name.toLowerCase()} studies and research papers on GymHub. Evidence-based fitness knowledge.`;
+
   return {
-    title: `${category.name} — GymHub`,
-    description: category.description || `Studies on ${category.name}`,
+    title: `${category.name} Studies — GymHub | Fitness Research`,
+    description,
+    keywords: [
+      `${category.name.toLowerCase()} studies`,
+      `${category.name.toLowerCase()} research`,
+      "fitness science",
+      "peer-reviewed",
+      "evidence-based",
+    ],
     alternates: {
       canonical: `${baseUrl}/categories/${slug}`,
     },
     openGraph: {
-      title: `${category.name} — GymHub`,
-      description: category.description || `Studies on ${category.name}`,
+      title: `${category.name} Studies — GymHub`,
+      description,
+      url: `${baseUrl}/categories/${slug}`,
+      siteName: "GymHub",
       type: "website",
+      locale: "en_US",
     },
     twitter: {
-      card: "summary",
-      title: `${category.name} — GymHub`,
-      description: category.description || `Studies on ${category.name}`,
+      card: "summary_large_image",
+      title: `${category.name} Studies — GymHub`,
+      description,
     },
   };
 }

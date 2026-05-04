@@ -17,7 +17,7 @@ export function StudyJsonLd({
   studyDesign: string | null;
   sampleSize: number | null;
 }) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub-bay.vercel.app";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -70,7 +70,7 @@ export function GuideJsonLd({
   slug: string;
   readTime: string;
 }) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub-bay.vercel.app";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -100,7 +100,7 @@ export function GuideJsonLd({
 }
 
 export function OrganizationJsonLd() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub-bay.vercel.app";
 
   const jsonLd = {
     "@context": "https://schema.org",

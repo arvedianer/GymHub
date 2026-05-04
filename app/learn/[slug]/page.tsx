@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const guide = getGuideBySlug(slug);
   if (!guide) return { title: "Guide Not Found" };
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub-bay.vercel.app";
   return {
     title: `${guide.title} — GymHub Learn`,
     description: guide.subtitle,

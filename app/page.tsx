@@ -29,6 +29,43 @@ import {
 } from "lucide-react";
 import { AnimatedSection, AnimatedCard, AnimatedText } from "@/components/animated";
 import { guides } from "@/lib/guides-data";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "GymHub — Science-Based Fitness Research | Peer-Reviewed Studies",
+  description:
+    "Cut through bro-science with 334+ peer-reviewed fitness studies on training, nutrition, supplements, and recovery. Summarized at 3 knowledge levels — beginner to advanced.",
+  keywords: [
+    "fitness studies",
+    "muscle hypertrophy research",
+    "strength training science",
+    "nutrition studies",
+    "supplement research",
+    "evidence-based fitness",
+    "peer-reviewed fitness",
+    "exercise science",
+    "bodybuilding research",
+    "workout studies",
+  ],
+  alternates: {
+    canonical: "https://gymhub-bay.vercel.app/",
+  },
+  openGraph: {
+    title: "GymHub — Science-Based Fitness Research",
+    description:
+      "334+ peer-reviewed fitness studies on training, nutrition, supplements, and recovery. Summarized at 3 knowledge levels.",
+    url: "https://gymhub-bay.vercel.app/",
+    siteName: "GymHub",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GymHub — Science-Based Fitness Research",
+    description:
+      "334+ peer-reviewed fitness studies on training, nutrition, supplements, and recovery. Summarized at 3 knowledge levels.",
+  },
+};
 
 const iconMap: Record<string, React.ElementType> = {
   Dumbbell,

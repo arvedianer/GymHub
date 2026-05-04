@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gymhub.vercel.app/sitemap.xml
+Sitemap: https://gymhub-bay.vercel.app/sitemap.xml

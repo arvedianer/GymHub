@@ -10,9 +10,37 @@ import { AnimatedSection, AnimatedCard } from "@/components/animated";
 import { StudyFilters } from "@/components/study-filters";
 
 export const metadata: Metadata = {
-  title: "Browse Studies — GymHub",
+  title: "Browse Fitness Studies — GymHub | 334+ Peer-Reviewed Papers",
   description:
-    "Browse our curated collection of peer-reviewed fitness research. Each study is summarized at three knowledge levels.",
+    "Browse 334+ peer-reviewed fitness research papers on training, nutrition, supplements, recovery, and health. Filter by category, study design, and knowledge level.",
+  keywords: [
+    "fitness studies database",
+    "peer-reviewed fitness research",
+    "training studies",
+    "nutrition research papers",
+    "supplement studies",
+    "muscle hypertrophy studies",
+    "exercise science database",
+    "strength training research",
+  ],
+  alternates: {
+    canonical: "https://gymhub-bay.vercel.app/studies",
+  },
+  openGraph: {
+    title: "Browse Fitness Studies — GymHub | 334+ Peer-Reviewed Papers",
+    description:
+      "Browse 334+ peer-reviewed fitness research papers on training, nutrition, supplements, recovery, and health.",
+    url: "https://gymhub-bay.vercel.app/studies",
+    siteName: "GymHub",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Browse Fitness Studies — GymHub | 334+ Peer-Reviewed Papers",
+    description:
+      "Browse 334+ peer-reviewed fitness research papers on training, nutrition, supplements, recovery, and health.",
+  },
 };
 
 async function getStudies(searchParamsPromise: Promise<{ [key: string]: string | string[] | undefined }>) {

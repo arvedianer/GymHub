@@ -47,25 +47,45 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const study = await prisma.study.findUnique({
     where: { slug },
-    select: { title: true, abstract: true, oberkategorie: true },
+    select: {
+      title: true,
+      abstract: true,
+      oberkategorie: true,
+      tags: { select: { tag: { select: { name: true } } } },
+    },
   });
   if (!study) return { title: "Study Not Found" };
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub-bay.vercel.app";
+  const tagNames = study.tags.map((t) => t.tag.name);
+  const keywords = [
+    "fitness study",
+    "peer-reviewed research",
+    ...(study.oberkategorie ? [study.oberkategorie.toLowerCase()] : []),
+    ...tagNames,
+  ];
+  const description =
+    study.abstract?.slice(0, 160) ||
+    `${study.title.slice(0, 120)} — Peer-reviewed fitness research summary on GymHub.`;
+
   return {
-    title: `${study.oberkategorie || study.title.slice(0, 50)} — GymHub`,
-    description: study.abstract?.slice(0, 160) || "Peer-reviewed fitness research summary.",
+    title: `${study.oberkategorie || study.title.slice(0, 60)} — GymHub Study`,
+    description,
+    keywords,
     alternates: {
       canonical: `${baseUrl}/studies/${slug}`,
     },
     openGraph: {
       title: study.oberkategorie || study.title.slice(0, 60),
-      description: study.abstract?.slice(0, 160) || "Peer-reviewed fitness research summary.",
+      description,
+      url: `${baseUrl}/studies/${slug}`,
+      siteName: "GymHub",
       type: "article",
+      locale: "en_US",
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: study.oberkategorie || study.title.slice(0, 60),
-      description: study.abstract?.slice(0, 160) || "Peer-reviewed fitness research summary.",
+      description,
     },
   };
 }
