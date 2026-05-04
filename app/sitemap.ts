@@ -1,18 +1,22 @@
 import { prisma } from "@/lib/prisma";
+import { safeQuery } from "@/lib/build-safe";
 import { guides } from "@/lib/guides-data";
 
 export default async function sitemap() {
-  const studies = await prisma.study.findMany({
-    select: { slug: true, updatedAt: true },
-  });
+  const studies = await safeQuery(
+    () => prisma.study.findMany({ select: { slug: true, updatedAt: true } }),
+    [] as { slug: string; updatedAt: Date }[]
+  );
 
-  const categories = await prisma.category.findMany({
-    select: { slug: true, updatedAt: true },
-  });
+  const categories = await safeQuery(
+    () => prisma.category.findMany({ select: { slug: true, updatedAt: true } }),
+    [] as { slug: string; updatedAt: Date }[]
+  );
 
-  const collections = await prisma.collection.findMany({
-    select: { slug: true, updatedAt: true },
-  });
+  const collections = await safeQuery(
+    () => prisma.collection.findMany({ select: { slug: true, updatedAt: true } }),
+    [] as { slug: string; updatedAt: Date }[]
+  );
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gymhub.vercel.app";
 
