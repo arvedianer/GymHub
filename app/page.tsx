@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { safeQuery } from "@/lib/build-safe";
 import { OrganizationJsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,39 +41,50 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 async function getHomeData() {
-  const categories = await prisma.category.findMany({ orderBy: { order: "asc" } });
-  const featuredStudies = await prisma.study.findMany({
-    where: { isFeatured: true },
-    orderBy: { methodologyQuality: "desc" },
-    take: 6,
-    include: { category: true, tags: { include: { tag: true } } },
-  });
-  const latestStudies = await prisma.study.findMany({
-    where: { isNew: true },
-    orderBy: { year: "desc" },
-    take: 4,
-    include: { category: true },
-  });
-  const studyCount = await prisma.study.count();
-  const collectionCount = await prisma.collection.count();
-  const categoryCount = await prisma.category.count();
+  return safeQuery(async () => {
+    const categories = await prisma.category.findMany({ orderBy: { order: "asc" } });
+    const featuredStudies = await prisma.study.findMany({
+      where: { isFeatured: true },
+      orderBy: { methodologyQuality: "desc" },
+      take: 6,
+      include: { category: true, tags: { include: { tag: true } } },
+    });
+    const latestStudies = await prisma.study.findMany({
+      where: { isNew: true },
+      orderBy: { year: "desc" },
+      take: 4,
+      include: { category: true },
+    });
+    const studyCount = await prisma.study.count();
+    const collectionCount = await prisma.collection.count();
+    const categoryCount = await prisma.category.count();
 
-  const levels = await prisma.gymLevel.findMany({ orderBy: { order: "asc" } });
-  const collections = await prisma.collection.findMany({
-    where: { isFeatured: true },
-    take: 3,
-  });
+    const levels = await prisma.gymLevel.findMany({ orderBy: { order: "asc" } });
+    const collections = await prisma.collection.findMany({
+      where: { isFeatured: true },
+      take: 3,
+    });
 
-  return {
-    categories,
-    featuredStudies,
-    latestStudies,
-    studyCount,
-    collectionCount,
-    categoryCount,
-    levels,
-    collections,
-  };
+    return {
+      categories,
+      featuredStudies,
+      latestStudies,
+      studyCount,
+      collectionCount,
+      categoryCount,
+      levels,
+      collections,
+    };
+  }, {
+    categories: [],
+    featuredStudies: [],
+    latestStudies: [],
+    studyCount: 0,
+    collectionCount: 0,
+    categoryCount: 0,
+    levels: [],
+    collections: [],
+  });
 }
 
 export default async function HomePage() {

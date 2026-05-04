@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { safeQuery } from "@/lib/build-safe";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,14 +25,16 @@ export const metadata: Metadata = {
 const levelIcons = [Dumbbell, TrendingUp, Zap, Award];
 
 async function getLevelsData() {
-  const levels = await prisma.gymLevel.findMany({ orderBy: { order: "asc" } });
-  const studiesByLevel = await Promise.all(
-    levels.map(async (level) => ({
-      count: await prisma.study.count({ where: { gymLevel: level.slug } }),
-      level,
-    }))
-  );
-  return studiesByLevel;
+  return safeQuery(async () => {
+    const levels = await prisma.gymLevel.findMany({ orderBy: { order: "asc" } });
+    const studiesByLevel = await Promise.all(
+      levels.map(async (level) => ({
+        count: await prisma.study.count({ where: { gymLevel: level.slug } }),
+        level,
+      }))
+    );
+    return studiesByLevel;
+  }, []);
 }
 
 export default async function LevelsPage() {

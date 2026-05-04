@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { safeQuery } from "@/lib/build-safe";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,30 +13,22 @@ export const metadata: Metadata = {
   description: "Curated study collections on specific fitness topics.",
 };
 
-async function getCollections() {
-  const collections = await prisma.collection.findMany({
-    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-  });
-  return collections.map((c) => ({
-    ...c,
-    studySlugs: JSON.parse(c.studyIds) as string[],
-  }));
-}
-
 async function getCollectionsWithCounts() {
-  const collections = await prisma.collection.findMany({
-    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-  });
-  
-  return Promise.all(
-    collections.map(async (c) => {
-      const slugs = JSON.parse(c.studyIds) as string[];
-      const count = await prisma.study.count({
-        where: { slug: { in: slugs } },
-      });
-      return { ...c, studySlugs: slugs, count };
-    })
-  );
+  return safeQuery(async () => {
+    const collections = await prisma.collection.findMany({
+      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+    });
+    
+    return Promise.all(
+      collections.map(async (c) => {
+        const slugs = JSON.parse(c.studyIds) as string[];
+        const count = await prisma.study.count({
+          where: { slug: { in: slugs } },
+        });
+        return { ...c, studySlugs: slugs, count };
+      })
+    );
+  }, []);
 }
 
 export default async function CollectionsPage() {

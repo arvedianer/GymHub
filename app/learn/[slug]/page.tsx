@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { GuideJsonLd } from "@/components/json-ld";
 import { guides, getGuideBySlug } from "@/lib/guides-data";
 import { prisma } from "@/lib/prisma";
+import { safeQuery } from "@/lib/build-safe";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AnimatedSection } from "@/components/animated";
@@ -67,31 +68,33 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 async function getRelatedStudies(category: string) {
-  const categoryMap: Record<string, string> = {
-    "Resistance Training": "resistance-training",
-    "Nutrition": "nutrition",
-    "Supplements": "supplements",
-    "PEDs & Harm Reduction": "peds",
-    "Recovery & Health": "recovery-health",
-    "Cardio & Conditioning": "cardio",
-  };
-  const catSlug = categoryMap[category];
-  if (!catSlug) return [];
+  return safeQuery(async () => {
+    const categoryMap: Record<string, string> = {
+      "Resistance Training": "resistance-training",
+      "Nutrition": "nutrition",
+      "Supplements": "supplements",
+      "PEDs & Harm Reduction": "peds",
+      "Recovery & Health": "recovery-health",
+      "Cardio & Conditioning": "cardio",
+    };
+    const catSlug = categoryMap[category];
+    if (!catSlug) return [];
 
-  return prisma.study.findMany({
-    where: { category: { slug: catSlug } },
-    take: 6,
-    orderBy: { year: "desc" },
-    select: {
-      slug: true,
-      title: true,
-      authors: true,
-      year: true,
-      studyDesign: true,
-      oberkategorie: true,
-      methodologyQuality: true,
-    },
-  });
+    return prisma.study.findMany({
+      where: { category: { slug: catSlug } },
+      take: 6,
+      orderBy: { year: "desc" },
+      select: {
+        slug: true,
+        title: true,
+        authors: true,
+        year: true,
+        studyDesign: true,
+        oberkategorie: true,
+        methodologyQuality: true,
+      },
+    });
+  }, []);
 }
 
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {

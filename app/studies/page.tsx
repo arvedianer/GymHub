@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { safeQuery } from "@/lib/build-safe";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, FlaskConical } from "lucide-react";
@@ -15,42 +16,44 @@ export const metadata: Metadata = {
 };
 
 async function getStudies(searchParamsPromise: Promise<{ [key: string]: string | string[] | undefined }>) {
-  const searchParams = await searchParamsPromise;
-  const category = typeof searchParams.category === "string" ? searchParams.category : undefined;
-  const design = typeof searchParams.design === "string" ? searchParams.design : undefined;
-  const level = typeof searchParams.level === "string" ? searchParams.level : undefined;
-  const q = typeof searchParams.q === "string" ? searchParams.q : undefined;
+  return safeQuery(async () => {
+    const searchParams = await searchParamsPromise;
+    const category = typeof searchParams.category === "string" ? searchParams.category : undefined;
+    const design = typeof searchParams.design === "string" ? searchParams.design : undefined;
+    const level = typeof searchParams.level === "string" ? searchParams.level : undefined;
+    const q = typeof searchParams.q === "string" ? searchParams.q : undefined;
 
-  const where: any = {};
-  if (category) {
-    where.category = { slug: category };
-  }
-  if (design) {
-    where.studyDesign = { contains: design };
-  }
-  if (level) {
-    where.gymLevel = level;
-  }
-  if (q) {
-    where.OR = [
-      { title: { contains: q } },
-      { abstract: { contains: q } },
-      { oberkategorie: { contains: q } },
-      { tags: { some: { tag: { name: { contains: q } } } } },
-    ];
-  }
+    const where: any = {};
+    if (category) {
+      where.category = { slug: category };
+    }
+    if (design) {
+      where.studyDesign = { contains: design };
+    }
+    if (level) {
+      where.gymLevel = level;
+    }
+    if (q) {
+      where.OR = [
+        { title: { contains: q } },
+        { abstract: { contains: q } },
+        { oberkategorie: { contains: q } },
+        { tags: { some: { tag: { name: { contains: q } } } } },
+      ];
+    }
 
-  const studies = await prisma.study.findMany({
-    where,
-    orderBy: { year: "desc" },
-    include: { category: true, tags: { include: { tag: true } } },
-  });
+    const studies = await prisma.study.findMany({
+      where,
+      orderBy: { year: "desc" },
+      include: { category: true, tags: { include: { tag: true } } },
+    });
 
-  const categories = await prisma.category.findMany({ orderBy: { order: "asc" } });
-  const designs = await prisma.study.groupBy({ by: ["studyDesign"] });
-  const levels = await prisma.gymLevel.findMany({ orderBy: { order: "asc" } });
+    const categories = await prisma.category.findMany({ orderBy: { order: "asc" } });
+    const designs = await prisma.study.groupBy({ by: ["studyDesign"] });
+    const levels = await prisma.gymLevel.findMany({ orderBy: { order: "asc" } });
 
-  return { studies, categories, designs, levels };
+    return { studies, categories, designs, levels };
+  }, { studies: [], categories: [], designs: [], levels: [] });
 }
 
 export default async function StudiesPage({

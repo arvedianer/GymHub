@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { safeQuery } from "@/lib/build-safe";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,12 +14,14 @@ export const metadata: Metadata = {
 };
 
 async function getNewStudies() {
-  const studies = await prisma.study.findMany({
-    where: { isNew: true },
-    orderBy: { year: "desc" },
-    include: { category: true, tags: { include: { tag: true } } },
-  });
-  return studies;
+  return safeQuery(async () => {
+    const studies = await prisma.study.findMany({
+      where: { isNew: true },
+      orderBy: { year: "desc" },
+      include: { category: true, tags: { include: { tag: true } } },
+    });
+    return studies;
+  }, []);
 }
 
 export default async function NewStudiesPage() {

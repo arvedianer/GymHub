@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { safeQuery } from "@/lib/build-safe";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -20,11 +21,13 @@ export const metadata: Metadata = {
 };
 
 async function getStats() {
-  const studyCount = await prisma.study.count();
-  const categoryCount = await prisma.category.count();
-  const collectionCount = await prisma.collection.count();
-  const avgQuality = await prisma.study.aggregate({ _avg: { methodologyQuality: true } });
-  return { studyCount, categoryCount, collectionCount, avgQuality: avgQuality._avg.methodologyQuality || 0 };
+  return safeQuery(async () => {
+    const studyCount = await prisma.study.count();
+    const categoryCount = await prisma.category.count();
+    const collectionCount = await prisma.collection.count();
+    const avgQuality = await prisma.study.aggregate({ _avg: { methodologyQuality: true } });
+    return { studyCount, categoryCount, collectionCount, avgQuality: avgQuality._avg.methodologyQuality || 0 };
+  }, { studyCount: 0, categoryCount: 0, collectionCount: 0, avgQuality: 0 });
 }
 
 export default async function AboutPage() {
